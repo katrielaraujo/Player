@@ -1,0 +1,22 @@
+# Arquivos de configuração específicos do IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Arquivos de compilação e saída
+/bin/
+/target/
+
+# Dependências do Maven
+/.classpath
+/.project
+/.settings/
+/target/
+
+# Arquivos de log
+/log/
+
+# Outros arquivos e pastas
+.DS_Store
+Thumbs.db
