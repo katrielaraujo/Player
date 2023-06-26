@@ -4,9 +4,9 @@ O projeto Media Player é um repositório que contém uma implementação de um 
 
 ## Descrição do Projeto e Código de Suporte
 
-A descrição completa do projeto, bem como o código de suporte, estão armazenados em um repositório externo chamado [Descrição Media Player](https://github.com/seu-usuario/descricao-media-player). Esse repositório contém todas as informações detalhadas sobre o funcionamento do media player, incluindo a estrutura de diretórios, arquivos de código-fonte, recursos de mídia, entre outros.
+A descrição completa do projeto, bem como o código de suporte, estão armazenados em um repositório externo chamado [Descrição Media Player](https://github.com/katrielaraujo/MusicPlay/blob/main/README.md). Esse repositório contém todas as informações detalhadas sobre o funcionamento do media player, incluindo a estrutura de diretórios, arquivos de código-fonte, recursos de mídia, entre outros.
 
-Para acessar e obter a descrição completa do projeto Media Player, você deve clonar o repositório [Descrição Media Player](https://github.com/seu-usuario/descricao-media-player) em sua máquina local.
+Para acessar e obter a descrição completa do projeto Media Player, você deve clonar o repositório [Descrição Media Player](https://github.com/katrielaraujo/MusicPlay/blob/main/README.md) em sua máquina local.
 
 ## Clone do Repositório Media Player
 
@@ -43,7 +43,7 @@ Certifique-se de ajustar o comando de execução de acordo com a estrutura do pr
 
 ## Contribuição
 
-Se você deseja contribuir para o projeto Media Player, siga as diretrizes de contribuição descritas no repositório [Descrição Media Player](https://github.com/seu-usuario/descricao-media-player). Lá você encontrará informações sobre como propor alterações, abrir pull requests e participar da discussão do projeto.
+Se você deseja contribuir para o projeto Media Player, siga as diretrizes de contribuição descritas no repositório [Descrição Media Player](https://github.com/katrielaraujo/MusicPlay/blob/main/README.md). Lá você encontrará informações sobre como propor alterações, abrir pull requests e participar da discussão do projeto.
 
 ## Autores
 
