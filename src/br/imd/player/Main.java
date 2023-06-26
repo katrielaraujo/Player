@@ -6,14 +6,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	URL fileFXML = getClass().getResource("/br/imd/player/gui/Login.fxml");
+    	URL fileFXML = getClass().getResource("/br/imd/player/view/Login.fxml");
         Parent root = FXMLLoader.load(fileFXML);
 
         Scene scene = new Scene(root);
