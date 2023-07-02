@@ -1,5 +1,6 @@
 package br.imd.player.model;
 
+import br.imd.player.util.IdGenerator;
 import br.imd.player.util.PlaylistOperationException;
 
 public class UserRegular extends User {
@@ -7,7 +8,8 @@ public class UserRegular extends User {
 
     public UserRegular() {
         super();
-        this.type = false;
+        this.type = 0;
+        this.id = IdGenerator.getNextId();
     }
 
     public String getDirectoryPath() {

@@ -1,13 +1,19 @@
 package br.imd.player.model;
 
+import br.imd.player.util.IdGenerator;
 import br.imd.player.util.SongNotFoundException;
 
 public class Song {
     private String title;
     private String filePath;
+    private Integer id;
 
     public Song() {
-    	
+    	this.id = IdGenerator.getNextId();
+    }
+    
+    public Integer getId() {
+    	return id;
     }
 
     public String getTitle() {

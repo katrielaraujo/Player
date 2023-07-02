@@ -1,30 +1,38 @@
 package br.imd.player.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import br.imd.player.util.IdGenerator;
 
 public class Playlist {
     private String name;
-    private List<Song> songs;
+    private Map<Integer,Song> songs;
+    private Integer id;
+    
+    public Integer getId() {
+    	return id;
+    }
 
     public Playlist(String name) {
         this.name = name;
-        songs = new ArrayList<>();
+        songs = new HashMap<>();
+        this.id = IdGenerator.getNextId();
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Song> getSongs() {
+    public Map<Integer,Song> getSongs() {
         return songs;
     }
 
     public void addSong(Song song) {
-        songs.add(song);
+        songs.put(song.getId(),song);
     }
 
     public void removeSong(Song song) {
-        songs.remove(song);
+        songs.remove(song.getId(),song);
     }
 }

@@ -5,17 +5,18 @@ import br.imd.player.util.PlaylistOperationException;
 public abstract class User {
 	protected String email;
     protected String password;
-    protected Boolean type;
+    protected Integer type;
+    protected Integer id;
     
-    public User() {
-        
+    public Integer getId() {
+    	return id;
     }
 
-    public Boolean getType() {
+    public Integer getType() {
 		return type;
 	}
 
-	public void setType(Boolean type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
     

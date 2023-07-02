@@ -1,22 +1,24 @@
 package br.imd.player.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+import br.imd.player.util.IdGenerator;
 import br.imd.player.util.PlaylistNotFoundException;
 
 public class UserVip extends User{
-	private List<Playlist> playlists;
+	private Map<Integer,Playlist> playlists;
 
     public UserVip() {
         super();
-        playlists = new ArrayList<>();
+        playlists = new HashMap<>();
+        this.id = IdGenerator.getNextId();
     }
 
     @Override
     public void createPlaylist(String playlistName) {
         Playlist newPlaylist = new Playlist(playlistName);
-        playlists.add(newPlaylist);
+        playlists.put(newPlaylist.getId(),newPlaylist);
     }
 
     public void addSongToPlaylist(String playlistName, Song song) throws PlaylistNotFoundException {
@@ -37,12 +39,12 @@ public class UserVip extends User{
         }
     }
 
-    public List<Playlist> getPlaylists() {
+    public Map<Integer,Playlist> getPlaylists() {
         return playlists;
     }
 
     private Playlist findPlaylist(String playlistName) {
-        for (Playlist playlist : playlists) {
+        for (Playlist playlist : playlists.values()) {
             if (playlist.getName().equals(playlistName)) {
                 return playlist;
             }
