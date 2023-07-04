@@ -1,4 +1,4 @@
-package br.imd.player.controller;
+package br.imd.player.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

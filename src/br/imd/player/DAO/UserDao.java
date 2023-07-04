@@ -1,4 +1,4 @@
-package br.imd.player.controller;
+package br.imd.player.DAO;
 
 import java.util.HashMap;
 import java.util.Map;
