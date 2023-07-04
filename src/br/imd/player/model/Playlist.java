@@ -3,21 +3,20 @@ package br.imd.player.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.imd.player.util.IdGenerator;
-
 public class Playlist {
+	private Integer id;
     private String name;
     private Map<Integer,Song> songs;
-    private Integer id;
+    private Integer userId;
     
     public Integer getId() {
     	return id;
     }
 
-    public Playlist(String name) {
+    public Playlist(String name,Integer userId) {
         this.name = name;
+        this.userId = userId;
         songs = new HashMap<>();
-        this.id = IdGenerator.getNextId();
     }
 
     public String getName() {
@@ -35,4 +34,8 @@ public class Playlist {
     public void removeSong(Song song) {
         songs.remove(song.getId(),song);
     }
+
+	public Integer getUserId() {
+		return userId;
+	}
 }

@@ -1,23 +1,14 @@
 package br.imd.player.model;
 
-import br.imd.player.util.IdGenerator;
 import br.imd.player.util.PlaylistOperationException;
+import br.imd.player.util.UserType;
 
 public class UserRegular extends User {
-    private String directoryPath;
+    
 
     public UserRegular() {
         super();
-        this.type = 0;
-        this.id = IdGenerator.getNextId();
-    }
-
-    public String getDirectoryPath() {
-        return directoryPath;
-    }
-
-    public void setDirectoryPath(String directoryPath) {
-        this.directoryPath = directoryPath;
+        this.type = UserType.REGULAR;
     }
 
     @Override
