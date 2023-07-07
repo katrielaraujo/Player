@@ -18,16 +18,18 @@ import br.imd.player.util.SongNotFoundException;
 import br.imd.player.util.UserType;
 
 public class MediaManager {
-	private static final String dbFileName = "./resources/database.db";
+	private static final String dbFileName = "./src/resources/database.db";
 	private Connection connection;
 	
-	public MediaManager() {
+	public MediaManager(){
 		try {
+			Class.forName("org.sqlite.JDBC");
 			String url = "jdbc:sqlite:"+dbFileName;
-			
 			connection = DriverManager.getConnection(url);
 			System.out.println("Conexão com o banco de dados estabelecida com sucesso!");
 		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}catch(ClassNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 	}

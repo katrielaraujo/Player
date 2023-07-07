@@ -39,16 +39,13 @@ public class RegisterController {
 
         if (isVip){
             user = new UserVip();
-            user.setEmail(email);
-            user.setPassword(senha);
-            user.setType(UserType.VIP);
         }else {
         	user = new UserVip();
-            user.setEmail(email);
-            user.setPassword(senha);
-            user.setType(UserType.REGULAR);
         }
-
+        
+        user.setEmail(email);
+        user.setPassword(senha);
+        user.setType(isVip ? UserType.VIP: UserType.REGULAR);
 
         if (saveUser(user)) {
             System.out.println("Usuário salvo: " + email);

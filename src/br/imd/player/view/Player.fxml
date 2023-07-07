@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1" fx:controller="br.imd.player.controller.MusicPlayerController">
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.7" fx:controller="br.imd.player.controller.MusicPlayerController">
    <AnchorPane prefHeight="416.0" prefWidth="510.0">
       <children>
           <ListView fx:id="musicList" onMouseClicked="#playMusic" prefHeight="416.0" prefWidth="224.0" />
