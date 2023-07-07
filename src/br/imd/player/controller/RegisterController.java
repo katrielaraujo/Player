@@ -9,8 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
-import java.sql.*;
+import java.util.Map;
 
 public class RegisterController {
     @FXML
@@ -32,55 +31,41 @@ public class RegisterController {
 
     @FXML
     private void handleRegistrarButton() {
-
+    	User user;
+    	
         boolean isVip = vipButton.isSelected();
         String email = emailField.getText();
         String senha = senhaField.getText();
 
-
-
         if (isVip){
-            UserVip user = new UserVip();
+            user = new UserVip();
             user.setEmail(email);
             user.setPassword(senha);
             user.setType(UserType.VIP);
-
-
-
+        }else {
+        	user = new UserVip();
+            user.setEmail(email);
+            user.setPassword(senha);
+            user.setType(UserType.REGULAR);
         }
 
 
-            if (saveUser(email, senha, isVip)) {
+        if (saveUser(user)) {
             System.out.println("Usuário salvo: " + email);
         } else {
             System.out.println("Usuário já existe: " + email);
         }
     }
 
-    private boolean saveUser(String email, String senha, boolean isVip) {
-        String url = "jdbc:sqlite:database.db";
-
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM usuarios WHERE email = ?")) {
-            stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            int count = rs.getInt(1);
-
-            if (count > 0) {
-                return false; // Usuário já existe
-            } else {
-                PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO usuarios (email, senha, is_vip) VALUES (?, ?, ?)");
-                insertStmt.setString(1, email);
-                insertStmt.setString(2, senha);
-                insertStmt.setBoolean(3, isVip);
-                insertStmt.executeUpdate();
-                return true; // Usuário salvo com sucesso
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false; // Ocorreu um erro ao salvar o usuário
+    private boolean saveUser(User user) {
+        MediaManager media = new MediaManager();
+        Map<String,User> users = media.getAllUsers();
+        if(users.containsKey(user.getEmail())) {
+        	return false;
         }
+        
+        media.insertUser(user);
+        return true;
     }
 
 

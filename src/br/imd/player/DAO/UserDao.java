@@ -6,21 +6,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDao {
-    private MediaManager mediaManager;
-    private Map<Integer, User> users;
+    //private MediaManager mediaManager;
 
-    public UserDao(MediaManager mediaManager) {
-        this.mediaManager = mediaManager;
-        users = new HashMap<>();
-    }
-
-    public void addUser(User user) {
-        mediaManager.insertUser(user);
-        users.put(user.getId(), user);
-    }
-
-    public void removeUser(User user) {
-        mediaManager.deleteUser(user.getId());
-        users.remove(user.getId());
-    }
+//    public UserDao(MediaManager mediaManager) {
+//        this.mediaManager = mediaManager;
+//        users = new HashMap<>();
+//    }
+//
+//    public void addUser(User user) {
+//        mediaManager.insertUser(user);
+//        users.put(user.getId(), user);
+//    }
+//
+//    public void removeUser(User user) {
+//        mediaManager.deleteUser(user.getId());
+//        users.remove(user.getId());
+//    }
 }

@@ -18,7 +18,7 @@ import br.imd.player.util.SongNotFoundException;
 import br.imd.player.util.UserType;
 
 public class MediaManager {
-	private static final String dbFileName = "/resources/databse.db";
+	private static final String dbFileName = "./resources/database.db";
 	private Connection connection;
 	
 	public MediaManager() {
@@ -26,6 +26,7 @@ public class MediaManager {
 			String url = "jdbc:sqlite:"+dbFileName;
 			
 			connection = DriverManager.getConnection(url);
+			System.out.println("Conexão com o banco de dados estabelecida com sucesso!");
 		}catch(SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -49,7 +50,7 @@ public class MediaManager {
 			pstmt.setString(1, user.getEmail());
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3,user.getDirectory());
-			pstmt.setInt(4,user.getType().ordinal());
+			pstmt.setInt(4,user.getType().getValue());
 			pstmt.executeUpdate();
 			
 			try (ResultSet rs = pstmt.getGeneratedKeys()) {
@@ -70,7 +71,7 @@ public class MediaManager {
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getDirectory());
-            pstmt.setInt(4, user.getType().ordinal());
+            pstmt.setInt(4, user.getType().getValue());
             pstmt.setInt(5, user.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -89,8 +90,8 @@ public class MediaManager {
         }
     }
 	
-	public Map<Integer,User> getAllUsers() {
-        Map<Integer,User> users = new HashMap<>();
+	public Map<String,User> getAllUsers() {
+        Map<String,User> users = new HashMap<>();
         String sql = "SELECT * FROM User";
 
         try (Statement stmt = connection.createStatement();
@@ -98,7 +99,7 @@ public class MediaManager {
 
             while (rs.next()) {
                 User user;
-                if (rs.getInt("Type") == UserType.VIP.ordinal()) {
+                if (rs.getInt("Type") == UserType.VIP.getValue()) {
                     user = new UserVip();
                 } else {
                     user = new UserRegular();
@@ -107,7 +108,7 @@ public class MediaManager {
                 user.setEmail(rs.getString("Email"));
                 user.setPassword(rs.getString("Password"));
                 user.setDirectory(rs.getString("Directory"));
-                users.put(user.getId(),user);
+                users.put(user.getEmail(),user);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
