@@ -38,4 +38,8 @@ public class Playlist {
 	public Integer getUserId() {
 		return userId;
 	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

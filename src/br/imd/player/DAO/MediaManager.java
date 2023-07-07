@@ -18,9 +18,10 @@ import br.imd.player.util.SongNotFoundException;
 import br.imd.player.util.UserType;
 
 public class MediaManager {
+	private static final String dbFileName = "/resources/databse.db";
 	private Connection connection;
 	
-	public MediaManager(String dbFileName) {
+	public MediaManager() {
 		try {
 			String url = "jdbc:sqlite:"+dbFileName;
 			
@@ -41,7 +42,7 @@ public class MediaManager {
 	}
 	
 	//User metodos
-	public void insertUsuario(User user) {
+	public void insertUser(User user) {
 		String sql = "INSERT INTO User(Email, Password, Directory, Type) VALUES(?,?,?,?)";
 		
 		try(PreparedStatement pstmt = connection.prepareStatement(sql)){
@@ -50,12 +51,19 @@ public class MediaManager {
 			pstmt.setString(3,user.getDirectory());
 			pstmt.setInt(4,user.getType().ordinal());
 			pstmt.executeUpdate();
+			
+			try (ResultSet rs = pstmt.getGeneratedKeys()) {
+		        if (rs.next()) {
+		            int generatedId = rs.getInt(1);
+		            user.setId(generatedId);
+		        }
+		    }
 		}catch(SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	public void updateUsuario(User user) {
+	public void updateUser(User user) {
 		String sql = "UPDATE User SET Email = ?, Password = ?, Directory = ?, Type = ? WHERE ID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -70,7 +78,7 @@ public class MediaManager {
         }
     }
 	
-	public void deleteUsuario(Integer userId) {
+	public void deleteUser(Integer userId) {
 		String sql = "DELETE FROM User WHERE ID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -81,7 +89,7 @@ public class MediaManager {
         }
     }
 	
-	public Map<Integer,User> getAllUsuarios() {
+	public Map<Integer,User> getAllUsers() {
         Map<Integer,User> users = new HashMap<>();
         String sql = "SELECT * FROM User";
 
@@ -115,6 +123,13 @@ public class MediaManager {
             pstmt.setString(1, playlist.getName());
             pstmt.setInt(2, playlist.getUserId());
             pstmt.executeUpdate();
+            
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+		        if (rs.next()) {
+		            int generatedId = rs.getInt(1);
+		            playlist.setId(generatedId);
+		        }
+		    }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -144,7 +159,7 @@ public class MediaManager {
         }
     }
 	
-	public Map<Integer,Song> getMusicasByPlaylist(int playlistId) {
+	public Map<Integer,Song> getSongsByPlaylist(int playlistId) {
         Map<Integer,Song> songs = new HashMap<>();
         String sql = "SELECT s.* FROM Song s "
                 + "JOIN Playlist_Song ps ON s.ID = ps.SongID "
@@ -169,19 +184,26 @@ public class MediaManager {
         return songs;
     }
 	
-	public void insertMusica(Song song) {
+	public void insertSong(Song song) {
 		String sql = "INSERT INTO Song(title, FilePath) VALUES(?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, song.getTitle());
             pstmt.setString(2, song.getFilePath());
             pstmt.executeUpdate();
+            
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+		        if (rs.next()) {
+		            int generatedId = rs.getInt(1);
+		            song.setId(generatedId);
+		        }
+		    }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 	
-	public void updateMusica(Song song) {
+	public void updateSong(Song song) {
 		String sql = "UPDATE Song SET title = ?, FilePath = ? WHERE ID = ?";
 
 	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -194,7 +216,7 @@ public class MediaManager {
 	    }
 	}
 	
-	public void deleteMusica(Integer songId) {
+	public void deleteSong(Integer songId) {
 		String sql = "DELETE FROM Song WHERE ID = ?";
 
 	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
