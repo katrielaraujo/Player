@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
-public class LoginController {
+public class LoginController{
     @FXML
     private TextField emailField;
 
@@ -25,6 +25,7 @@ public class LoginController {
 
     @FXML
     private Button registrarButton;
+    private Stage primaryStage;
 
     @FXML
     private void initialize() {
@@ -36,14 +37,27 @@ public class LoginController {
         // Lógica para processar o clique no botão "Enter"
         String email = emailField.getText();
         String senha = senhaField.getCharacters().toString();
-        // Faça algo com o email e a senha
-        //exibirAviso("Login bem-sucedido", "Usuário e senha corretos");
 
         if (email.equals("usuario") && senha.equals("senha")) {
             exibirAviso("Login bem-sucedido", "Usuário e senha corretos");
-        }
-        else {
+            openMusicPlayerScreen();
+
+        } else {
             exibirAviso("Login inválido", "Usuário ou senha incorretos");
+        }
+    }
+
+    private void openMusicPlayerScreen() {
+        try {
+            URL fileFXML = getClass().getResource("/br/imd/player/view/Player.fxml");
+            Parent registerRoot = FXMLLoader.load(fileFXML);
+
+            Scene playerScene = new Scene(registerRoot);
+            Stage primaryStage = (Stage) enterButton.getScene().getWindow();
+            primaryStage.setScene(playerScene);
+            primaryStage.setTitle("Player");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -70,4 +84,6 @@ public class LoginController {
         alert.setContentText(mensagem);
         alert.showAndWait();
     }
+
+
 }

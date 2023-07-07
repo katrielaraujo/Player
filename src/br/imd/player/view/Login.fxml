@@ -36,7 +36,7 @@
                             </font>
                         </Label>
                         <PasswordField fx:id="senhaField" promptText="Senha..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button mnemonicParsing="false" onAction="#handleEnterButton" text="Enter" GridPane.rowIndex="2">
+                        <Button fx:id="enterButton" mnemonicParsing="false" onAction="#handleEnterButton" text="Enter" GridPane.rowIndex="2">
                             <font>
                                 <Font size="16.0" />
                             </font>
