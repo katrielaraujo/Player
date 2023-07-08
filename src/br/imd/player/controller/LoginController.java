@@ -1,5 +1,7 @@
 package br.imd.player.controller;
 
+import br.imd.player.DAO.MediaManager;
+import br.imd.player.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 public class LoginController{
     @FXML
@@ -38,7 +41,7 @@ public class LoginController{
         String email = emailField.getText();
         String senha = senhaField.getCharacters().toString();
 
-        if (email.equals("usuario") && senha.equals("senha")) {
+        if (authenticUser(email, senha)) {
             exibirAviso("Login bem-sucedido", "Usuário e senha corretos");
             openMusicPlayerScreen();
 
@@ -84,6 +87,19 @@ public class LoginController{
         alert.setContentText(mensagem);
         alert.showAndWait();
     }
+
+    private boolean authenticUser(String email, String password) {
+        MediaManager media = new MediaManager();
+        Map<String, User> users = media.getAllUsers();
+
+        if (users.containsKey(email)) {
+            User user = users.get(email);
+            return user.getPassword().equals(password);
+        }
+
+        return false;
+    }
+
 
 
 }
