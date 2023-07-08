@@ -162,6 +162,19 @@ public class MediaManager {
         }
     }
 	
+	// Método para associar uma música a uma playlist específica
+	public void associateSongToPlaylist(int songId, int playlistId) {
+	    String sql = "INSERT INTO Playlist_Song (PlaylistID, SongID) VALUES (?, ?)";
+	    
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setInt(1, playlistId);
+	        pstmt.setInt(2, songId);
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+	}
+	
 	public Map<Integer,Song> getSongsByPlaylist(int playlistId) {
         Map<Integer,Song> songs = new HashMap<>();
         String sql = "SELECT s.* FROM Song s "
