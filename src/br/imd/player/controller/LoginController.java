@@ -28,7 +28,9 @@ public class LoginController{
 
     @FXML
     private Button registrarButton;
-    private Stage primaryStage;
+    
+    @FXML
+    private MusicPlayerController musicPlayerController;
 
     @FXML
     private void initialize() {
@@ -43,19 +45,25 @@ public class LoginController{
 
         if (authenticUser(email, senha)) {
             exibirAviso("Login bem-sucedido", "Usuário e senha corretos");
-            openMusicPlayerScreen();
-
+            MediaManager media = new MediaManager();
+            Map<String, User> users = media.getAllUsers();
+            User user = users.get(email);
+            openMusicPlayerScreen(user);
         } else {
             exibirAviso("Login inválido", "Usuário ou senha incorretos");
         }
     }
 
-    private void openMusicPlayerScreen() {
-        try {
+    private void openMusicPlayerScreen(User user) {
+    	try {
             URL fileFXML = getClass().getResource("/br/imd/player/view/Player.fxml");
-            Parent registerRoot = FXMLLoader.load(fileFXML);
+            FXMLLoader loader = new FXMLLoader(fileFXML);
+            Parent playerRoot = loader.load();
 
-            Scene playerScene = new Scene(registerRoot);
+            musicPlayerController = loader.getController(); // Obter a referência do MusicPlayerController
+            musicPlayerController.setUser(user); // Passar o objeto User
+
+            Scene playerScene = new Scene(playerRoot);
             Stage primaryStage = (Stage) enterButton.getScene().getWindow();
             primaryStage.setScene(playerScene);
             primaryStage.setTitle("Player");

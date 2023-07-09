@@ -18,8 +18,8 @@ public abstract class User implements FileLister{
     protected String directory;
     
     @Override
-	public List<String> listFilesInDirectory() {
-		List<String> fileList = new ArrayList<>();
+	public List<File> listFilesInDirectory() {
+		List<File> fileList = new ArrayList<>();
 		
 		File directoryFile = new File(directory);
 		File[] files = directoryFile.listFiles();
@@ -27,7 +27,7 @@ public abstract class User implements FileLister{
         if (files != null) {
             for (File file : files) {
                 if (file.isFile() && file.getName().toLowerCase().endsWith(".mp3")) {
-                    fileList.add(file.getName());
+                    fileList.add(file);
                 }
             }
         }

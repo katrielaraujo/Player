@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import br.imd.player.DAO.MediaManager;
+import br.imd.player.model.User;
+
 public class MusicPlayerController {
     @FXML
     private ListView<String> musicList;
@@ -35,22 +38,15 @@ public class MusicPlayerController {
     @FXML
     private ProgressBar songProgressBar;
 
-    private File directory;
     private File[] files;
-
-
     private int songNumber;
     private Timer timer;
     private TimerTask task;
     private boolean running;
 
-
-
-
-
+    private User user;
+    private MediaManager dao;
     private ArrayList<File> songs;
-
-    private String path;
     private MediaPlayer mediaPlayer;
     private Media media;
 
@@ -72,37 +68,54 @@ public class MusicPlayerController {
         });
 
         songProgressBar.setStyle("-fx-accent: #00FF00;");
+    }
+    
+    public void setUser(User user) {
+        this.user = user;
         chooseFileMethod();
-
     }
 
 
     //Nessa função você pode escolher qualquer musica que tiver no sistema.
     //Lembrar de alterar ela ainda.
     public void chooseFileMethod(){
+    	if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
+            loadFilesFromDirectory();
+        } else {
+            showDirectoryChooser();
+        }
+
+    }
+
+    public void loadFilesFromDirectory() {
+        String directoryPath = user.getDirectory();
+        File directoryFile = new File(directoryPath);
+        File[] files = directoryFile.listFiles();
+
+        if (files != null) {
+            songs = new ArrayList<>(Arrays.asList(files));
+            if (!songs.isEmpty()) {
+                songNumber = 0;
+                File selectedSong = songs.get(songNumber);
+                songLabel.setText(selectedSong.getName());
+                media = new Media(selectedSong.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+            }
+        }
+    }
+
+    public void showDirectoryChooser() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Selecionar Pasta");
 
         File directory = directoryChooser.showDialog(null);
 
         if (directory != null) {
-            songs = new ArrayList<>();
-            files = directory.listFiles();
-
-            if (files != null) {
-                songs.addAll(Arrays.asList(files));
-            }
-
-            if (!songs.isEmpty()) {
-                songNumber = 0;
-                File selectedSong = songs.get(songNumber);
-                songLabel.setText(selectedSong.getName());
-
-                media = new Media(selectedSong.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-            }
+            user.setDirectory(directory.getAbsolutePath());
+            dao = new MediaManager();
+            dao.updateUser(user);
+            loadFilesFromDirectory();
         }
-
     }
 
 
