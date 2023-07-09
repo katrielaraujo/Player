@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,7 +39,6 @@ public class MusicPlayerController {
     @FXML
     private ProgressBar songProgressBar;
 
-    private File[] files;
     private int songNumber;
     private Timer timer;
     private TimerTask task;
@@ -46,7 +46,7 @@ public class MusicPlayerController {
 
     private User user;
     private MediaManager dao;
-    private ArrayList<File> songs;
+    private List<File> songs;
     private MediaPlayer mediaPlayer;
     private Media media;
 
@@ -93,7 +93,7 @@ public class MusicPlayerController {
         File[] files = directoryFile.listFiles();
 
         if (files != null) {
-            songs = new ArrayList<>(Arrays.asList(files));
+            songs = user.listFilesInDirectory();
             if (!songs.isEmpty()) {
                 songNumber = 0;
                 File selectedSong = songs.get(songNumber);
@@ -153,76 +153,31 @@ public class MusicPlayerController {
     }
 
     public void previousMedia() {
-
-        if(songNumber > 0) {
-
-            songNumber--;
-
-            mediaPlayer.stop();
-
-            if(running) {
-
-                cancelTimer();
-            }
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-
-            songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
-        }
-        else {
-
-            songNumber = songs.size() - 1;
-
-            mediaPlayer.stop();
-
-            if(running) {
-
-                cancelTimer();
-            }
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-
-            songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
-        }
+    	if (!songs.isEmpty()) {
+    	        songNumber = (songNumber - 1 + songs.size()) % songs.size();
+    	        mediaPlayer.stop();
+    	        if (running) {
+    	            cancelTimer();
+    	        }
+    	        media = new Media(songs.get(songNumber).toURI().toString());
+    	        mediaPlayer = new MediaPlayer(media);
+    	        songLabel.setText(songs.get(songNumber).getName());
+    	        playMedia();
+    	}
+        
     }
 
     public void nextMedia() {
 
-        if(songNumber < songs.size() - 1) {
-
-            songNumber++;
-
+    	if (!songs.isEmpty()) {
+            songNumber = (songNumber + 1) % songs.size();
             mediaPlayer.stop();
-
-            if(running) {
-
+            if (running) {
                 cancelTimer();
             }
-
             media = new Media(songs.get(songNumber).toURI().toString());
             mediaPlayer = new MediaPlayer(media);
-
             songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
-        }
-        else {
-
-            songNumber = 0;
-
-            mediaPlayer.stop();
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-
-            songLabel.setText(songs.get(songNumber).getName());
-
             playMedia();
         }
     }
