@@ -79,7 +79,7 @@ public class MusicPlayerController {
             }
         });
         
-     // Inicialize a songList
+        //Inicialize a songList
         songList = FXCollections.observableArrayList();
         // Defina songList como os itens de musicList
         musicList.setItems(songList);
@@ -138,9 +138,17 @@ public class MusicPlayerController {
 
     @FXML
     private void playMusic(MouseEvent event) {
-    	Song selectedMusic = musicList.getSelectionModel().getSelectedItem();
+    	//Song selectedMusic = musicList.getSelectionModel().getSelectedItem();
         // Lógica para reproduzir a música selecionada
-        System.out.println("Reproduzindo música: " + selectedMusic.getTitle());
+        //System.out.println("Reproduzindo música: " + selectedMusic.getTitle());
+    	songNumber = musicList.getSelectionModel().getSelectedIndex();
+    	if (!songs.isEmpty()) {
+    		mediaPlayer.stop();
+     	    if (running) {
+     	    	cancelTimer();
+     	    }
+     	    toPlay(songNumber);
+    	}
     }
 
     public void criarPlaylist(ActionEvent event) {
