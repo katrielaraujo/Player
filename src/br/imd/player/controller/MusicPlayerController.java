@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
@@ -16,12 +17,16 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import br.imd.player.DAO.MediaManager;
+import br.imd.player.model.Song;
 import br.imd.player.model.User;
+import br.imd.player.util.SongNotFoundException;
 
 public class MusicPlayerController {
     @FXML
@@ -45,6 +50,7 @@ public class MusicPlayerController {
     private User user;
     private MediaManager dao;
     private List<File> songs;
+    private ObservableList<String> songList;
     private MediaPlayer mediaPlayer;
     private Media media;
 
@@ -64,6 +70,11 @@ public class MusicPlayerController {
                 mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
             }
         });
+        
+     // Inicialize a songList
+        songList = FXCollections.observableArrayList();
+        // Defina songList como os itens de musicList
+        musicList.setItems(songList);
 
         songProgressBar.setStyle("-fx-accent: #00FF00;");
     }
@@ -86,19 +97,13 @@ public class MusicPlayerController {
     }
 
     public void loadFilesFromDirectory() {
-        String directoryPath = user.getDirectory();
-        File directoryFile = new File(directoryPath);
-        File[] files = directoryFile.listFiles();
-
-        if (files != null) {
-            songs = user.listFilesInDirectory();
-            if (!songs.isEmpty()) {
-                songNumber = 0;
-                File selectedSong = songs.get(songNumber);
-                songLabel.setText(selectedSong.getName());
-                media = new Media(selectedSong.toURI().toString());
-                toPlay(media);
-            }
+    	songs = user.listFilesInDirectory();
+        if (user != null || !songs.isEmpty()) {
+            songList.addAll(convertFilesToSongs(songs).stream().map(Song::toString).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+            songNumber = 0;
+            songLabel.setText(songs.get(songNumber).getName());
+            media = new Media(songs.get(songNumber).toURI().toString());
+            toPlay(media);
         }
     }
 
@@ -132,7 +137,6 @@ public class MusicPlayerController {
     }
 
     public void playMedia() {
-
         beginTimer();
         mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
         mediaPlayer.play();
@@ -145,13 +149,11 @@ public class MusicPlayerController {
     }
 
     public void pauseMedia() {
-
         cancelTimer();
         mediaPlayer.pause();
     }
 
     public void resetMedia() {
-
         songProgressBar.setProgress(0);
         mediaPlayer.seek(Duration.seconds(0));
     }
@@ -170,7 +172,6 @@ public class MusicPlayerController {
     }
 
     public void nextMedia() {
-
     	if (!songs.isEmpty()) {
             songNumber = (songNumber + 1) % songs.size();
             mediaPlayer.stop();
@@ -189,14 +190,12 @@ public class MusicPlayerController {
         task = new TimerTask() {
 
             public void run() {
-
                 running = true;
                 double current = mediaPlayer.getCurrentTime().toSeconds();
                 double end = media.getDuration().toSeconds();
                 songProgressBar.setProgress(current/end);
 
                 if(current/end == 1) {
-
                     cancelTimer();
                 }
             }
@@ -206,9 +205,31 @@ public class MusicPlayerController {
     }
 
     public void cancelTimer() {
-
         running = false;
         timer.cancel();
+    }
+    
+    private List<Song> convertFilesToSongs(List<File> files){
+        List<Song> songs = new ArrayList<>();
+
+        for (File file : files) {
+            Song song = new Song();
+            try {
+				song.setFilePath(file.getPath());
+			} catch (SongNotFoundException e) {
+				e.printStackTrace();
+			}
+            String nameFile = file.getName();
+            int posicaoPonto = nameFile.lastIndexOf(".");
+            if (posicaoPonto != -1) {
+            	nameFile = nameFile.substring(0, posicaoPonto);
+            }
+            song.setTitle(nameFile);
+            
+            songs.add(song);
+        }
+        
+        return songs;
     }
 
 }

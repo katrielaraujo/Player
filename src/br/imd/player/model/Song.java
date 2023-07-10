@@ -29,6 +29,11 @@ public class Song {
         }
         this.filePath = filePath;
     }
+    
+    @Override
+    public String toString() {
+        return this.title;
+    }
 
 	public void setId(Integer id) {
 		this.id = id;

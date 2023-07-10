@@ -4,6 +4,7 @@ module media {
 	requires javafx.graphics;
 	requires java.sql;
     requires javafx.media;
+	requires javafx.base;
 
     opens br.imd.player to javafx.fxml;
 	opens br.imd.player.controller to javafx.fxml;
