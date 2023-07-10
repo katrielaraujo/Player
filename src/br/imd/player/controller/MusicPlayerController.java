@@ -14,6 +14,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -30,7 +31,7 @@ import br.imd.player.util.SongNotFoundException;
 
 public class MusicPlayerController {
     @FXML
-    private ListView<String> musicList;
+    private ListView<Song> musicList;
     @FXML
     private Pane pane;
     @FXML
@@ -50,7 +51,7 @@ public class MusicPlayerController {
     private User user;
     private MediaManager dao;
     private List<File> songs;
-    private ObservableList<String> songList;
+    private ObservableList<Song> songList;
     private MediaPlayer mediaPlayer;
     private Media media;
 
@@ -68,6 +69,18 @@ public class MusicPlayerController {
             public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 
                 mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
+            }
+        });
+        
+        musicList.setCellFactory(param -> new ListCell<Song>() {
+            @Override
+            protected void updateItem(Song item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item.getTitle());
+                } else {
+                    setText(null);
+                }
             }
         });
         
@@ -98,12 +111,11 @@ public class MusicPlayerController {
 
     public void loadFilesFromDirectory() {
     	songs = user.listFilesInDirectory();
-        if (user != null || !songs.isEmpty()) {
-            songList.addAll(convertFilesToSongs(songs).stream().map(Song::toString).collect(Collectors.toCollection(FXCollections::observableArrayList)));
+        if (songs != null && !songs.isEmpty()) {
+        	songList.addAll(convertFilesToSongs(songs));
             songNumber = 0;
-            songLabel.setText(songs.get(songNumber).getName());
-            media = new Media(songs.get(songNumber).toURI().toString());
-            toPlay(media);
+            songLabel.setText(songList.get(songNumber).getTitle());
+            toPlay(songNumber);
         }
     }
 
@@ -124,9 +136,9 @@ public class MusicPlayerController {
 
     @FXML
     private void playMusic(MouseEvent event) {
-        String selectedMusic = musicList.getSelectionModel().getSelectedItem();
+    	Song selectedMusic = musicList.getSelectionModel().getSelectedItem();
         // Lógica para reproduzir a música selecionada
-        System.out.println("Reproduzindo música: " + selectedMusic);
+        System.out.println("Reproduzindo música: " + selectedMusic.getTitle());
     }
 
 
@@ -142,9 +154,10 @@ public class MusicPlayerController {
         mediaPlayer.play();
     }
     
-    public void toPlay(Media media) {
+    public void toPlay(int songNumber) {
+    	media = new Media(songs.get(songNumber).toURI().toString());
     	mediaPlayer = new MediaPlayer(media);
-	    songLabel.setText(songs.get(songNumber).getName());
+	    songLabel.setText(songList.get(songNumber).getTitle());
 	    playMedia();
     }
 
@@ -160,13 +173,12 @@ public class MusicPlayerController {
 
     public void previousMedia() {
     	if (!songs.isEmpty()) {
-    	        songNumber = (songNumber - 1 + songs.size()) % songs.size();
-    	        mediaPlayer.stop();
-    	        if (running) {
-    	            cancelTimer();
-    	        }
-    	        media = new Media(songs.get(songNumber).toURI().toString());
-    	        toPlay(media);
+    		songNumber = (songNumber - 1 + songs.size()) % songs.size();
+    	    mediaPlayer.stop();
+    	    if (running) {
+    	    	cancelTimer();
+    	    }
+    	    toPlay(songNumber);
     	}
         
     }
@@ -178,8 +190,7 @@ public class MusicPlayerController {
             if (running) {
                 cancelTimer();
             }
-            media = new Media(songs.get(songNumber).toURI().toString());
-            toPlay(media);
+            toPlay(songNumber);
         }
     }
 
