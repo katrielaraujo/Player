@@ -16,8 +16,6 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -99,7 +97,7 @@ public class MusicPlayerController {
                 File selectedSong = songs.get(songNumber);
                 songLabel.setText(selectedSong.getName());
                 media = new Media(selectedSong.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
+                toPlay(media);
             }
         }
     }
@@ -139,6 +137,12 @@ public class MusicPlayerController {
         mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
         mediaPlayer.play();
     }
+    
+    public void toPlay(Media media) {
+    	mediaPlayer = new MediaPlayer(media);
+	    songLabel.setText(songs.get(songNumber).getName());
+	    playMedia();
+    }
 
     public void pauseMedia() {
 
@@ -160,9 +164,7 @@ public class MusicPlayerController {
     	            cancelTimer();
     	        }
     	        media = new Media(songs.get(songNumber).toURI().toString());
-    	        mediaPlayer = new MediaPlayer(media);
-    	        songLabel.setText(songs.get(songNumber).getName());
-    	        playMedia();
+    	        toPlay(media);
     	}
         
     }
@@ -176,9 +178,7 @@ public class MusicPlayerController {
                 cancelTimer();
             }
             media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            songLabel.setText(songs.get(songNumber).getName());
-            playMedia();
+            toPlay(media);
         }
     }
 
