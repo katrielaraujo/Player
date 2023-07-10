@@ -52,12 +52,6 @@ public class MusicPlayerController {
 
 
     public void initialize() {
-        // Inicializar a lista de músicas
-        //songs = FXCollections.observableArrayList();
-        //songs.addAll("Música 1", "Música 2", "Música 3");
-
-        // Configurar a lista no ListView
-        //musicList.setItems(songs);
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -75,13 +69,23 @@ public class MusicPlayerController {
         chooseFileMethod();
     }
 
+    public void exibirAviso(String titulo, String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
+
 
     //Nessa função você pode escolher qualquer musica que tiver no sistema.
     //Lembrar de alterar ela ainda.
     public void chooseFileMethod(){
     	if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
+
             loadFilesFromDirectory();
         } else {
+            exibirAviso("Diretorio", "Selecione o seu diretorio contendo musicas");
             showDirectoryChooser();
         }
 
