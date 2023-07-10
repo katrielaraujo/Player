@@ -18,6 +18,9 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -37,7 +40,7 @@ public class MusicPlayerController {
     @FXML
     private Label songLabel;
     @FXML
-    private Button playButton, pauseButton, resetButton, previousButton, nextButton;
+    private Button playButton, pauseButton, resetButton, previousButton, nextButton, addFileButton;
     @FXML
     private Slider volumeSlider;
     @FXML
@@ -54,20 +57,12 @@ public class MusicPlayerController {
     private ObservableList<Song> songList;
     private MediaPlayer mediaPlayer;
     private Media media;
-
+    private FileChooser fileChooser;
 
     public void initialize() {
-        // Inicializar a lista de músicas
-        //songs = FXCollections.observableArrayList();
-        //songs.addAll("Música 1", "Música 2", "Música 3");
-
-        // Configurar a lista no ListView
-        //musicList.setItems(songs);
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
             @Override
             public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-
                 mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
             }
         });
@@ -90,23 +85,31 @@ public class MusicPlayerController {
         musicList.setItems(songList);
 
         songProgressBar.setStyle("-fx-accent: #00FF00;");
+
+        fileChooser = new FileChooser();
+        fileChooser.setTitle("Adicionar Arquivo de Música");
     }
-    
+
     public void setUser(User user) {
         this.user = user;
         chooseFileMethod();
     }
 
+    public void exibirAviso(String titulo, String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
 
-    //Nessa função você pode escolher qualquer musica que tiver no sistema.
-    //Lembrar de alterar ela ainda.
-    public void chooseFileMethod(){
-    	if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
+    public void chooseFileMethod() {
+        if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
             loadFilesFromDirectory();
         } else {
+            exibirAviso("Diretorio", "Selecione o seu diretorio contendo musicas");
             showDirectoryChooser();
         }
-
     }
 
     public void loadFilesFromDirectory() {
@@ -133,7 +136,6 @@ public class MusicPlayerController {
         }
     }
 
-
     @FXML
     private void playMusic(MouseEvent event) {
     	Song selectedMusic = musicList.getSelectionModel().getSelectedItem();
@@ -141,11 +143,12 @@ public class MusicPlayerController {
         System.out.println("Reproduzindo música: " + selectedMusic.getTitle());
     }
 
-
     public void criarPlaylist(ActionEvent event) {
+        // Lógica para criar uma playlist
     }
 
     public void selectPlaylist(MouseEvent mouseEvent) {
+        // Lógica para selecionar uma playlist
     }
 
     public void playMedia() {
@@ -179,12 +182,11 @@ public class MusicPlayerController {
     	    	cancelTimer();
     	    }
     	    toPlay(songNumber);
-    	}
-        
+    	 }  
     }
 
     public void nextMedia() {
-    	if (!songs.isEmpty()) {
+        if (!songs.isEmpty()) {
             songNumber = (songNumber + 1) % songs.size();
             mediaPlayer.stop();
             if (running) {
@@ -195,15 +197,13 @@ public class MusicPlayerController {
     }
 
     public void beginTimer() {
-
         timer = new Timer();
-
         task = new TimerTask() {
-
             public void run() {
                 running = true;
                 double current = mediaPlayer.getCurrentTime().toSeconds();
                 double end = media.getDuration().toSeconds();
+
                 songProgressBar.setProgress(current/end);
 
                 if(current/end == 1) {
@@ -211,7 +211,6 @@ public class MusicPlayerController {
                 }
             }
         };
-
         timer.scheduleAtFixedRate(task, 1000, 1000);
     }
 
@@ -243,4 +242,28 @@ public class MusicPlayerController {
         return songs;
     }
 
+    @FXML
+    private void addFile(ActionEvent event) {
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
+            addFileToDirectory(selectedFiles);
+        }
+    }
+
+    public void addFileToDirectory(List<File> selectedFiles) {
+        if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
+            File directory = new File(user.getDirectory());
+            for (File file : selectedFiles) {
+                File newFile = new File(directory, file.getName());
+                try {
+                    // Copie ou mova o arquivo para o diretório existente
+                    Files.copy(file.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            loadFilesFromDirectory();
+        }
+    }
 }
