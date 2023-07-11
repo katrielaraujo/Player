@@ -1,20 +1,23 @@
 package br.imd.player.controller;
 
-import javafx.beans.value.ChangeListener;
+import br.imd.player.DAO.MediaManager;
+import br.imd.player.model.Playlist;
+import br.imd.player.model.Song;
+import br.imd.player.model.User;
+import br.imd.player.model.UserVip;
+import br.imd.player.util.SongNotFoundException;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -22,15 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import br.imd.player.DAO.MediaManager;
-import br.imd.player.model.Playlist;
-import br.imd.player.model.Song;
-import br.imd.player.model.User;
-import br.imd.player.model.UserVip;
-import br.imd.player.util.PlaylistOperationException;
-import br.imd.player.util.SongNotFoundException;
 
 public class MusicPlayerController {
     @FXML
@@ -45,6 +39,8 @@ public class MusicPlayerController {
     private Slider volumeSlider;
     @FXML
     private ProgressBar songProgressBar;
+    @FXML
+    private ListView<Playlist> playlistListView;
 
     private int songNumber;
     private Timer timer;
@@ -58,15 +54,26 @@ public class MusicPlayerController {
     private MediaPlayer mediaPlayer;
     private Media media;
     private FileChooser fileChooser;
+    private ObservableList<Playlist> playlistList;
 
     public void initialize() {
-        volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-                mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
-            }
+        initializeVolumeSlider();
+        initializeMusicListCellFactory();
+        initializePlaylistListViewCellFactory();
+        initializeSongList();
+
+        songProgressBar.setStyle("-fx-accent: #00FF00;");
+        fileChooser = new FileChooser();
+        fileChooser.setTitle("Adicionar Arquivo de Música");
+    }
+
+    private void initializeVolumeSlider() {
+        volumeSlider.valueProperty().addListener((ObservableValue<? extends Number> arg0, Number arg1, Number arg2) -> {
+            mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
         });
-        
+    }
+
+    private void initializeMusicListCellFactory() {
         musicList.setCellFactory(param -> new ListCell<Song>() {
             @Override
             protected void updateItem(Song item, boolean empty) {
@@ -78,21 +85,31 @@ public class MusicPlayerController {
                 }
             }
         });
-        
-        //Inicialize a songList
+    }
+
+    private void initializePlaylistListViewCellFactory() {
+        playlistListView.setCellFactory(param -> new ListCell<Playlist>() {
+            @Override
+            protected void updateItem(Playlist item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText(item.getName());
+                } else {
+                    setText(null);
+                }
+            }
+        });
+    }
+
+    private void initializeSongList() {
         songList = FXCollections.observableArrayList();
-        // Defina songList como os itens de musicList
         musicList.setItems(songList);
-
-        songProgressBar.setStyle("-fx-accent: #00FF00;");
-
-        fileChooser = new FileChooser();
-        fileChooser.setTitle("Adicionar Arquivo de Música");
     }
 
     public void setUser(User user) {
         this.user = user;
         chooseFileMethod();
+        loadPlaylists();
     }
 
     public void exibirAviso(String titulo, String mensagem) {
@@ -101,6 +118,16 @@ public class MusicPlayerController {
         alert.setHeaderText(null);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+
+    private void loadPlaylists() {
+        if (user instanceof UserVip) {
+            UserVip userVip = (UserVip) user;
+            dao = new MediaManager();
+            userVip.setPlaylists(dao.getPlaylistsByUserId(userVip.getId()));
+            playlistList = FXCollections.observableArrayList(userVip.getPlaylists().values());
+            playlistListView.setItems(playlistList);
+        }
     }
 
     public void chooseFileMethod() {
@@ -113,9 +140,9 @@ public class MusicPlayerController {
     }
 
     public void loadFilesFromDirectory() {
-    	songs = user.listFilesInDirectory();
+        songs = user.listFilesInDirectory();
         if (songs != null && !songs.isEmpty()) {
-        	songList.addAll(convertFilesToSongs(songs));
+            songList.addAll(convertFilesToSongs(songs));
             songNumber = 0;
             songLabel.setText(songList.get(songNumber).getTitle());
             toPlay(songNumber);
@@ -136,35 +163,45 @@ public class MusicPlayerController {
         }
     }
 
+    public void addFileToDirectory(List<File> selectedFiles) {
+        if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
+            File directory = new File(user.getDirectory());
+            for (File file : selectedFiles) {
+                File newFile = new File(directory, file.getName());
+                try {
+                    // Copie ou mova o arquivo para o diretório existente
+                    Files.copy(file.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            loadFilesFromDirectory();
+        }
+    }
     @FXML
-    private void playMusic(MouseEvent event) {
-    	//Song selectedMusic = musicList.getSelectionModel().getSelectedItem();
-        // Lógica para reproduzir a música selecionada
-        //System.out.println("Reproduzindo música: " + selectedMusic.getTitle());
-    	songNumber = musicList.getSelectionModel().getSelectedIndex();
-    	if (!songs.isEmpty()) {
-    		mediaPlayer.stop();
-     	    if (running) {
-     	    	cancelTimer();
-     	    }
-     	    toPlay(songNumber);
-    	}
+    private void addFile(ActionEvent event) {
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
+            addFileToDirectory(selectedFiles);
+        }
     }
 
+
+
     public void criarPlaylist(ActionEvent event) {
-        String namePlaylist = openInputDialog();
+        String playlistName = openInputDialog();
         UserVip userVip = (UserVip) user;
         updateUserVip(userVip);
 
-        if (!userVip.getPlaylists().containsKey(namePlaylist)) {
+        if (!userVip.getPlaylists().containsKey(playlistName)) {
             dao = new MediaManager();
-            userVip.createPlaylist(namePlaylist);
-            dao.insertPlaylist(userVip.getPlaylists().get(namePlaylist));
-            System.out.println(userVip.getPlaylists().get(namePlaylist));
-            exibirAviso("Playlist", "Show de bolaaaa!! Playlist criada com sucesso");
+            userVip.createPlaylist(playlistName);
+            dao.insertPlaylist(userVip.getPlaylists().get(playlistName));
+            playlistList.add(userVip.getPlaylists().get(playlistName));
+            exibirAviso("Playlist", "Playlist criada com sucesso!");
         } else {
-            System.out.println("A playlist já existe");
-            exibirAviso("Playlist", "Error!! Playlist ja existe");
+            exibirAviso("Playlist", "A playlist já existe!");
         }
     }
 
@@ -183,9 +220,27 @@ public class MusicPlayerController {
     }
 
     public void selectPlaylist(MouseEvent mouseEvent) {
-        // Lógica para selecionar uma playlist
+        Playlist selectedPlaylist = playlistListView.getSelectionModel().getSelectedItem();
+        if (selectedPlaylist != null) {
+            Map<String, Song> songs = selectedPlaylist.getSongs();
+            List<Song> playlistSongs = new ArrayList<>(songs.values());
+            songList.setAll(playlistSongs); // Atualiza a lista de músicas (musicList) com as músicas da playlist
+
+            if (!playlistSongs.isEmpty()) {
+                songNumber = 0;
+                songLabel.setText(playlistSongs.get(songNumber).getTitle());
+                mediaPlayer.stop();
+                if (running) {
+                    cancelTimer();
+                }
+                toPlay(songNumber); // Reproduz a primeira música da playlist
+            } else {
+                exibirAviso("Playlist Vazia", "A playlist selecionada não contém músicas. Por favor, adicione uma música à playlist.");
+            }
+        }
     }
-    
+
+
     private void updateUserVip(UserVip user) {
         dao = new MediaManager();
         Map<String, Playlist> playlists = dao.getPlaylistsByUserId(user.getId());
@@ -200,12 +255,24 @@ public class MusicPlayerController {
         mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
         mediaPlayer.play();
     }
-    
+
+
     public void toPlay(int songNumber) {
-    	media = new Media(songs.get(songNumber).toURI().toString());
-    	mediaPlayer = new MediaPlayer(media);
-	    songLabel.setText(songList.get(songNumber).getTitle());
-	    playMedia();
+        media = new Media(songs.get(songNumber).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        songLabel.setText(songList.get(songNumber).getTitle());
+        playMedia();
+    }
+    @FXML
+    private void playMusic(MouseEvent event) {
+        songNumber = musicList.getSelectionModel().getSelectedIndex();
+        if (!songs.isEmpty()) {
+            mediaPlayer.stop();
+            if (running) {
+                cancelTimer();
+            }
+            toPlay(songNumber);
+        }
     }
 
     public void pauseMedia() {
@@ -219,14 +286,14 @@ public class MusicPlayerController {
     }
 
     public void previousMedia() {
-    	if (!songs.isEmpty()) {
-    		songNumber = (songNumber - 1 + songs.size()) % songs.size();
-    	    mediaPlayer.stop();
-    	    if (running) {
-    	    	cancelTimer();
-    	    }
-    	    toPlay(songNumber);
-    	 }  
+        if (!songs.isEmpty()) {
+            songNumber = (songNumber - 1 + songs.size()) % songs.size();
+            mediaPlayer.stop();
+            if (running) {
+                cancelTimer();
+            }
+            toPlay(songNumber);
+        }
     }
 
     public void nextMedia() {
@@ -248,9 +315,9 @@ public class MusicPlayerController {
                 double current = mediaPlayer.getCurrentTime().toSeconds();
                 double end = media.getDuration().toSeconds();
 
-                songProgressBar.setProgress(current/end);
+                songProgressBar.setProgress(current / end);
 
-                if(current/end == 1) {
+                if (current / end == 1) {
                     cancelTimer();
                 }
             }
@@ -262,51 +329,30 @@ public class MusicPlayerController {
         running = false;
         timer.cancel();
     }
-    
-    private List<Song> convertFilesToSongs(List<File> files){
+
+    private List<Song> convertFilesToSongs(List<File> files) {
         List<Song> songs = new ArrayList<>();
 
         for (File file : files) {
             Song song = new Song();
             try {
-				song.setFilePath(file.getPath());
-			} catch (SongNotFoundException e) {
-				e.printStackTrace();
-			}
+                song.setFilePath(file.getPath());
+            } catch (SongNotFoundException e) {
+                e.printStackTrace();
+            }
             String nameFile = file.getName();
             int posicaoPonto = nameFile.lastIndexOf(".");
             if (posicaoPonto != -1) {
-            	nameFile = nameFile.substring(0, posicaoPonto);
+                nameFile = nameFile.substring(0, posicaoPonto);
             }
             song.setTitle(nameFile);
-            
+
             songs.add(song);
         }
         return songs;
     }
 
-    @FXML
-    private void addFile(ActionEvent event) {
-        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
 
-        if (selectedFiles != null && !selectedFiles.isEmpty()) {
-            addFileToDirectory(selectedFiles);
-        }
-    }
 
-    public void addFileToDirectory(List<File> selectedFiles) {
-        if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
-            File directory = new File(user.getDirectory());
-            for (File file : selectedFiles) {
-                File newFile = new File(directory, file.getName());
-                try {
-                    // Copie ou mova o arquivo para o diretório existente
-                    Files.copy(file.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            loadFilesFromDirectory();
-        }
-    }
+
 }
