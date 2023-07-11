@@ -152,8 +152,7 @@ public class MusicPlayerController {
     }
 
     public void criarPlaylist(ActionEvent event) {
-        System.out.println(openInputDialog());
-        String namePlaylist = "";
+        String namePlaylist = openInputDialog();
         UserVip userVip = (UserVip) user;
         userVip.createPlaylist(namePlaylist);
         if(userVip.getPlaylists().containsKey(namePlaylist)){
