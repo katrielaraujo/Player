@@ -152,6 +152,7 @@ public class MusicPlayerController {
     }
 
     public void criarPlaylist(ActionEvent event) {
+<<<<<<< Updated upstream
         String namePlaylist = openInputDialog();
         UserVip userVip = (UserVip) user;
         userVip.createPlaylist(namePlaylist);
@@ -178,6 +179,25 @@ public class MusicPlayerController {
         return playlistName;
     }
 
+=======
+        System.out.println(openInputDialog());
+    }
+
+    private String openInputDialog() {
+        String playlistName = null;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Adicionar Playlist");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Digite o nome da playlist:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            playlistName = result.get();
+        }
+        return playlistName;
+    }
+
+>>>>>>> Stashed changes
 
 
     public void selectPlaylist(MouseEvent mouseEvent) {
