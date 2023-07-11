@@ -152,12 +152,12 @@ public class MusicPlayerController {
     }
 
     public void criarPlaylist(ActionEvent event) {
-<<<<<<< Updated upstream
         String namePlaylist = openInputDialog();
         UserVip userVip = (UserVip) user;
-        userVip.createPlaylist(namePlaylist);
+        updateUserVip(userVip);
         if(userVip.getPlaylists().containsKey(namePlaylist)){
         	dao = new MediaManager();
+        	userVip.createPlaylist(namePlaylist);
         	dao.insertPlaylist(userVip.getPlaylists().get(namePlaylist));
         	System.out.println(userVip.getPlaylists().get(namePlaylist));
         }else {
@@ -178,27 +178,6 @@ public class MusicPlayerController {
         }
         return playlistName;
     }
-
-=======
-        System.out.println(openInputDialog());
-    }
-
-    private String openInputDialog() {
-        String playlistName = null;
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Adicionar Playlist");
-        dialog.setHeaderText(null);
-        dialog.setContentText("Digite o nome da playlist:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            playlistName = result.get();
-        }
-        return playlistName;
-    }
-
->>>>>>> Stashed changes
-
 
     public void selectPlaylist(MouseEvent mouseEvent) {
         // Lógica para selecionar uma playlist
