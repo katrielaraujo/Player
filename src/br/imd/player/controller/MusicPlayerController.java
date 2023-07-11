@@ -163,29 +163,66 @@ public class MusicPlayerController {
         }
     }
 
-    public void addFileToDirectory(List<File> selectedFiles) {
-        if (user.getDirectory() != null && !user.getDirectory().isEmpty()) {
-            File directory = new File(user.getDirectory());
+    public void addSongsToSelectedPlaylist(List<Song> songs) {
+        String selectedPlaylistName = String.valueOf(playlistListView.getSelectionModel().getSelectedItem());
+        if (selectedPlaylistName != null) {
+            UserVip userVip = (UserVip) user;
+            Playlist selectedPlaylist = userVip.getPlaylists().get(selectedPlaylistName);
+            if (selectedPlaylist != null) {
+                for (Song song : songs) {
+                    selectedPlaylist.addSong(song);
+                }
+            }
+        }
+    }
+
+    public void addFileToDirectory(List<File> selectedFiles, String directoryPath) {
+        if (directoryPath != null && !directoryPath.isEmpty()) {
+            File directory = new File(directoryPath);
+            List<Song> newSongs = new ArrayList<>();
+
             for (File file : selectedFiles) {
                 File newFile = new File(directory, file.getName());
                 try {
                     // Copie ou mova o arquivo para o diretório existente
                     Files.copy(file.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
+
+                    // Crie uma nova música e adicione-a à lista de músicas
+                    Song newSong = new Song();
+                    newSong.setTitle(file.getName());
+                    newSong.setFilePath(newFile.getAbsolutePath());
+
+                    if (!songList.contains(newSong)) {
+                        songList.add(newSong);
+                        newSongs.add(newSong);
+                    }
+                } catch (IOException | SongNotFoundException e) {
                     e.printStackTrace();
                 }
             }
-            loadFilesFromDirectory();
+
+            // Chame o método para adicionar as novas músicas à playlist selecionada
+            addSongsToSelectedPlaylist(newSongs);
         }
     }
+
+
+
+
+
+
     @FXML
-    private void addFile(ActionEvent event) {
+    private void addFile( ) {
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
 
         if (selectedFiles != null && !selectedFiles.isEmpty()) {
-            addFileToDirectory(selectedFiles);
+            addFileToDirectory(selectedFiles, user.getDirectory());
         }
     }
+
+
+
+
 
 
 
@@ -236,6 +273,7 @@ public class MusicPlayerController {
                 toPlay(songNumber); // Reproduz a primeira música da playlist
             } else {
                 exibirAviso("Playlist Vazia", "A playlist selecionada não contém músicas. Por favor, adicione uma música à playlist.");
+                addFile();
             }
         }
     }
