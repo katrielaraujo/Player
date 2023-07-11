@@ -161,8 +161,10 @@ public class MusicPlayerController {
             userVip.createPlaylist(namePlaylist);
             dao.insertPlaylist(userVip.getPlaylists().get(namePlaylist));
             System.out.println(userVip.getPlaylists().get(namePlaylist));
+            exibirAviso("Playlist", "Show de bolaaaa!! Playlist criada com sucesso");
         } else {
             System.out.println("A playlist já existe");
+            exibirAviso("Playlist", "Error!! Playlist ja existe");
         }
     }
 
