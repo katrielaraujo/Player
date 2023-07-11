@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+/**
+ * Controlador responsável pelo registro de usuários.
+ */
 public class RegisterController {
     @FXML
     private CheckBox vipButton;
@@ -28,11 +31,17 @@ public class RegisterController {
     @FXML
     private Button registrarButton;
 
+    /**
+     * Inicializa o controlador.
+     */
     @FXML
     private void initialize() {
 
     }
 
+    /**
+     * Manipula o evento de clique do botão "Registrar".
+     */
     @FXML
     private void handleRegistrarButton() {
         User user;
@@ -42,7 +51,7 @@ public class RegisterController {
 
         if (isVip){
             user = new UserVip();
-        }else {
+        } else {
             user = new UserVip();
         }
 
@@ -54,18 +63,22 @@ public class RegisterController {
             exibirAviso("Sucesso no cadastro", "Usuário salvo: " + email );
             System.out.println("Usuário salvo: " + email);
             returnLoginScreen();
-
-
         } else {
             exibirAviso("Fracasso no cadastro", "Usuário já existe: " + email );
             System.out.println("Usuário já existe: " + email);
         }
     }
 
+    /**
+     * Salva um usuário no sistema.
+     *
+     * @param user o usuário a ser salvo.
+     * @return true se o usuário foi salvo com sucesso, false caso contrário.
+     */
     private boolean saveUser(User user) {
         MediaManager media = new MediaManager();
-        Map<String,User> users = media.getAllUsers();
-        if(users.containsKey(user.getEmail())) {
+        Map<String, User> users = media.getAllUsers();
+        if (users.containsKey(user.getEmail())) {
             return false;
         }
 
@@ -73,7 +86,12 @@ public class RegisterController {
         return true;
     }
 
-
+    /**
+     * Exibe um aviso em forma de diálogo.
+     *
+     * @param titulo   o título do aviso.
+     * @param mensagem a mensagem do aviso.
+     */
     private void exibirAviso(String titulo, String mensagem) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -82,6 +100,9 @@ public class RegisterController {
         alert.showAndWait();
     }
 
+    /**
+     * Retorna para a tela de login.
+     */
     private void returnLoginScreen() {
         try {
             URL fileFXML = getClass().getResource("/br/imd/player/view/Login.fxml");
@@ -95,6 +116,4 @@ public class RegisterController {
             e.printStackTrace();
         }
     }
-
-
 }

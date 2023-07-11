@@ -18,7 +18,10 @@ import java.util.Map;
 
 import static br.imd.player.util.UserType.VIP;
 
-public class LoginController{
+/**
+ * Controlador responsável pela tela de login.
+ */
+public class LoginController {
     @FXML
     private TextField emailField;
 
@@ -30,15 +33,14 @@ public class LoginController{
 
     @FXML
     private Button registrarButton;
-    
+
     @FXML
     private MusicPlayerController musicPlayerController;
 
-    @FXML
-    private void initialize() {
-        // Aqui você pode adicionar lógica de inicialização, se necessário
-    }
 
+    /**
+     * Manipula o evento de clique do botão "Enter".
+     */
     @FXML
     private void handleEnterButton() {
         // Lógica para processar o clique no botão "Enter"
@@ -56,9 +58,13 @@ public class LoginController{
         }
     }
 
+    /**
+     * Abre a tela do reprodutor de música, de acordo com o tipo de usuário.
+     *
+     * @param user o usuário autenticado.
+     */
     private void openMusicPlayerScreen(User user) {
-        if(user.getType() == VIP ) {
-
+        if (user.getType() == VIP) {
             try {
                 URL fileFXML = getClass().getResource("/br/imd/player/view/Player.fxml");
                 FXMLLoader loader = new FXMLLoader(fileFXML);
@@ -74,8 +80,7 @@ public class LoginController{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             try {
                 URL fileFXML = getClass().getResource("/br/imd/player/view/NormalPlayer.fxml");
                 FXMLLoader loader = new FXMLLoader(fileFXML);
@@ -91,10 +96,12 @@ public class LoginController{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
+    /**
+     * Manipula o evento de clique do botão "Registrar".
+     */
     @FXML
     private void handleRegistrarButton() {
         try {
@@ -110,7 +117,12 @@ public class LoginController{
         }
     }
 
-
+    /**
+     * Exibe um aviso em forma de diálogo.
+     *
+     * @param titulo   o título do aviso.
+     * @param mensagem a mensagem do aviso.
+     */
     private void exibirAviso(String titulo, String mensagem) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -119,6 +131,13 @@ public class LoginController{
         alert.showAndWait();
     }
 
+    /**
+     * Autentica um usuário com base no email e senha fornecidos.
+     *
+     * @param email    o email do usuário.
+     * @param password a senha do usuário.
+     * @return true se o usuário for autenticado com sucesso, false caso contrário.
+     */
     private boolean authenticUser(String email, String password) {
         MediaManager media = new MediaManager();
         Map<String, User> users = media.getAllUsers();
@@ -130,7 +149,4 @@ public class LoginController{
 
         return false;
     }
-
-
-
 }
