@@ -155,13 +155,14 @@ public class MusicPlayerController {
         String namePlaylist = openInputDialog();
         UserVip userVip = (UserVip) user;
         updateUserVip(userVip);
-        if(userVip.getPlaylists().containsKey(namePlaylist)){
-        	dao = new MediaManager();
-        	userVip.createPlaylist(namePlaylist);
-        	dao.insertPlaylist(userVip.getPlaylists().get(namePlaylist));
-        	System.out.println(userVip.getPlaylists().get(namePlaylist));
-        }else {
-        	System.out.println("PlayList já existe");
+
+        if (!userVip.getPlaylists().containsKey(namePlaylist)) {
+            dao = new MediaManager();
+            userVip.createPlaylist(namePlaylist);
+            dao.insertPlaylist(userVip.getPlaylists().get(namePlaylist));
+            System.out.println(userVip.getPlaylists().get(namePlaylist));
+        } else {
+            System.out.println("A playlist já existe");
         }
     }
 
@@ -184,11 +185,12 @@ public class MusicPlayerController {
     }
     
     private void updateUserVip(UserVip user) {
-    	dao = new MediaManager();
-    	user.setPlaylists(dao.getPlaylistsByUserId(user.getId()));
-    	for (Playlist play : user.getPlaylists().values()) {
-    		play.setSongs(dao.getSongsByPlaylist(play.getId()));
-    	}
+        dao = new MediaManager();
+        Map<String, Playlist> playlists = dao.getPlaylistsByUserId(user.getId());
+        for (Playlist play : playlists.values()) {
+            play.setSongs(dao.getSongsByPlaylist(play.getId()));
+        }
+        user.setPlaylists(playlists);
     }
 
     public void playMedia() {
