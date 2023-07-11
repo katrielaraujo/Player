@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="731.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.7" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.imd.player.controller.RegisterController">
+    <children>
+      <AnchorPane layoutX="14.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="462.0" prefWidth="618.0" style="-fx-background-color: aeb8fe;">
+         <children>
+            <Circle fill="#aeb8fe" layoutX="214.0" layoutY="354.0" radius="78.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="154.0" layoutY="350.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="214.0" layoutY="354.0" radius="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#aeb8fe" layoutX="214.0" layoutY="354.0" radius="78.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="114.0" layoutY="100.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="44.0" layoutY="250.0" radius="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="504.0" layoutY="109.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#aeb8fe" layoutX="504.0" layoutY="109.0" radius="78.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#aeb8fe" layoutX="114.0" layoutY="100.0" radius="78.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="114.0" layoutY="100.0" radius="63.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Rectangle arcHeight="10.0" arcWidth="10.0" fill="#f1f2f6" height="339.0" layoutX="171.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="280.0">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </Rectangle>
+            <Label layoutX="201.0" layoutY="157.0" text="Usuário:" textFill="#27187e">
+               <font>
+                  <Font name="Franklin Gothic Medium" size="19.0" />
+               </font>
+            </Label>
+            <Label layoutX="207.0" layoutY="204.0" text="Senha:" textFill="#27187e">
+               <font>
+                  <Font name="Franklin Gothic Medium" size="19.0" />
+               </font>
+            </Label>
+            <Button fx:id="registrarButton" cache="true" defaultButton="true" depthTest="DISABLE" layoutX="244.0" layoutY="324.0" mnemonicParsing="false" onAction="#handleRegistrarButton" prefHeight="29.0" prefWidth="141.0" style="-fx-background-color: #27187e; -fx-background-color: #27187e;" text="Registrar" textAlignment="CENTER" textFill="#eeeded" textOverrun="CLIP" AnchorPane.rightAnchor="233.0">
+               <font>
+                  <Font name="Franklin Gothic Demi Cond" size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
+            </Button>
+            <Circle fill="#27187e" layoutX="504.0" layoutY="109.0" radius="63.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="152.0" layoutY="187.0" radius="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="582.0" layoutY="312.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="618.0" layoutY="312.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="292.0" layoutY="48.0" radius="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="54.0" layoutY="260.0" radius="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="482.0" layoutY="450.0" radius="38.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="413.0" layoutY="494.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="356.0" layoutY="412.0" radius="38.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="619.0" layoutY="312.0" radius="63.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#27187e" layoutX="114.0" layoutY="100.0" radius="38.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fill="#ff8600" layoutX="114.0" layoutY="100.0" radius="19.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Line endX="100.0" fill="#ff8600" layoutX="311.0" layoutY="135.0" startX="-100.0" stroke="#402203" />
+            <Line endX="43.0" fill="#ff8600" layoutX="341.0" layoutY="287.0" startX="-97.0" stroke="#402203" />
+              <Label layoutX="266.0" layoutY="83.0" text="Register">
+                  <font>
+                      <Font size="28.0" />
+                  </font>
+              </Label>
+                  <TextField fx:id="emailField" layoutX="281.0" layoutY="160.0" prefHeight="25.0" prefWidth="132.0" promptText="Email..." />
+                  <PasswordField fx:id="senhaField" layoutX="281.0" layoutY="205.0" prefHeight="25.0" prefWidth="132.0" promptText="Senha..." />
+            <Label layoutX="207.0" layoutY="246.0" text="Conta:" textFill="#27187e">
+               <font>
+                  <Font name="Franklin Gothic Medium" size="19.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="vipButton" layoutX="280.0" layoutY="251.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="77.0" text="VIP" />
+         </children>
+      </AnchorPane>
+    </children>
+</AnchorPane>
