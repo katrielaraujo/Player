@@ -21,10 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import br.imd.player.DAO.MediaManager;
@@ -155,6 +152,7 @@ public class MusicPlayerController {
     }
 
     public void criarPlaylist(ActionEvent event) {
+        System.out.println(openInputDialog());
         String namePlaylist = "";
         UserVip userVip = (UserVip) user;
         userVip.createPlaylist(namePlaylist);
@@ -166,6 +164,22 @@ public class MusicPlayerController {
         	System.out.println("PlayList já existe");
         }
     }
+
+    private String openInputDialog() {
+        String playlistName = null;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Adicionar Playlist");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Digite o nome da playlist:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            playlistName = result.get();
+        }
+        return playlistName;
+    }
+
+
 
     public void selectPlaylist(MouseEvent mouseEvent) {
         // Lógica para selecionar uma playlist

@@ -9,7 +9,7 @@
       <children>
          <ListView fx:id="musicList" layoutX="111.0" layoutY="47.0" onMouseClicked="#playMusic" prefHeight="361.0" prefWidth="224.0" />
          <ListView layoutX="377.0" layoutY="47.0" onMouseClicked="#selectPlaylist" prefHeight="230.0" prefWidth="224.0" />
-         <Button layoutX="14.0" layoutY="109.0" mnemonicParsing="false" text="Criar Playlist" />
+         <Button layoutX="14.0" layoutY="109.0" mnemonicParsing="false" onAction="#criarPlaylist" text="Criar Playlist" />
          <Button layoutX="14.0" layoutY="66.0" mnemonicParsing="false" onAction="#addFile" prefHeight="25.0" prefWidth="86.0" text="Add File" />
          <Label layoutX="192.0" layoutY="24.0" text="Musicas">
             <font>
