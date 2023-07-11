@@ -162,6 +162,28 @@ public class MediaManager {
         }
     }
 	
+	public Map<String, Playlist> getPlaylistsByUserId(int userId) {
+	    Map<String, Playlist> playlists = new HashMap<>();
+	    String sql = "SELECT * FROM Playlist WHERE UserID = ?";
+
+	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+	        stmt.setInt(1, userId);
+	        ResultSet rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	            Playlist playlist = new Playlist(rs.getString("Name"), userId);
+	            playlist.setId(rs.getInt("ID"));
+	            playlists.put(playlist.getName(), playlist);
+	        }
+
+	        rs.close();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+
+	    return playlists;
+	}
+	
 	// Método para associar uma música a uma playlist específica
 	public void associateSongToPlaylist(int songId, int playlistId) {
 	    String sql = "INSERT INTO Playlist_Song (PlaylistID, SongID) VALUES (?, ?)";
@@ -175,8 +197,8 @@ public class MediaManager {
 	    }
 	}
 	
-	public Map<Integer,Song> getSongsByPlaylist(int playlistId) {
-        Map<Integer,Song> songs = new HashMap<>();
+	public Map<String,Song> getSongsByPlaylist(int playlistId) {
+        Map<String,Song> songs = new HashMap<>();
         String sql = "SELECT s.* FROM Song s "
                 + "JOIN Playlist_Song ps ON s.ID = ps.SongID "
                 + "WHERE ps.PlaylistID = ?";
@@ -190,7 +212,7 @@ public class MediaManager {
                 musica.setId(rs.getInt("ID"));
                 musica.setTitle(rs.getString("title"));
                 musica.setFilePath(rs.getString("FilePath"));
-                songs.put(musica.getId(),musica);
+                songs.put(musica.getTitle(),musica);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

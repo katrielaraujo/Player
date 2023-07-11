@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+import static br.imd.player.util.UserType.VIP;
+
 public class LoginController{
     @FXML
     private TextField emailField;
@@ -55,20 +57,41 @@ public class LoginController{
     }
 
     private void openMusicPlayerScreen(User user) {
-    	try {
-            URL fileFXML = getClass().getResource("/br/imd/player/view/Player.fxml");
-            FXMLLoader loader = new FXMLLoader(fileFXML);
-            Parent playerRoot = loader.load();
+        if(user.getType() == VIP ) {
 
-            musicPlayerController = loader.getController(); // Obter a referência do MusicPlayerController
-            musicPlayerController.setUser(user); // Passar o objeto User
+            try {
+                URL fileFXML = getClass().getResource("/br/imd/player/view/Player.fxml");
+                FXMLLoader loader = new FXMLLoader(fileFXML);
+                Parent playerRoot = loader.load();
 
-            Scene playerScene = new Scene(playerRoot);
-            Stage primaryStage = (Stage) enterButton.getScene().getWindow();
-            primaryStage.setScene(playerScene);
-            primaryStage.setTitle("Player");
-        } catch (IOException e) {
-            e.printStackTrace();
+                musicPlayerController = loader.getController(); // Obter a referência do MusicPlayerController
+                musicPlayerController.setUser(user); // Passar o objeto User
+
+                Scene playerScene = new Scene(playerRoot);
+                Stage primaryStage = (Stage) enterButton.getScene().getWindow();
+                primaryStage.setScene(playerScene);
+                primaryStage.setTitle("Player");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                URL fileFXML = getClass().getResource("/br/imd/player/view/NormalPlayer.fxml");
+                FXMLLoader loader = new FXMLLoader(fileFXML);
+                Parent playerRoot = loader.load();
+
+                musicPlayerController = loader.getController(); // Obter a referência do MusicPlayerController
+                musicPlayerController.setUser(user); // Passar o objeto User
+
+                Scene playerScene = new Scene(playerRoot);
+                Stage primaryStage = (Stage) enterButton.getScene().getWindow();
+                primaryStage.setScene(playerScene);
+                primaryStage.setTitle("Player");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

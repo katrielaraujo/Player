@@ -7,7 +7,7 @@ import br.imd.player.util.PlaylistNotFoundException;
 import br.imd.player.util.UserType;
 
 public class UserVip extends User{
-	private Map<Integer,Playlist> playlists;
+	private Map<String,Playlist> playlists;
 
     public UserVip() {
         super();
@@ -18,11 +18,11 @@ public class UserVip extends User{
     @Override
     public void createPlaylist(String playlistName) {
         Playlist newPlaylist = new Playlist(playlistName,this.id);
-        playlists.put(newPlaylist.getId(),newPlaylist);
+        playlists.put(playlistName,newPlaylist);
     }
 
-    public void addSongToPlaylist(Integer playlistId, Song song) throws PlaylistNotFoundException {
-        Playlist playlist = findPlaylist(playlistId);
+    public void addSongToPlaylist(String playlistName, Song song) throws PlaylistNotFoundException {
+        Playlist playlist = findPlaylist(playlistName);
         if (playlist != null) {
             playlist.addSong(song);
         } else {
@@ -30,8 +30,8 @@ public class UserVip extends User{
         }
     }
 
-    public void removeSongFromPlaylist(Integer playlistId, Song song) throws PlaylistNotFoundException {
-        Playlist playlist = findPlaylist(playlistId);
+    public void removeSongFromPlaylist(String playlistName, Song song) throws PlaylistNotFoundException {
+        Playlist playlist = findPlaylist(playlistName);
         if (playlist != null) {
             playlist.removeSong(song);
         } else {
@@ -39,15 +39,19 @@ public class UserVip extends User{
         }
     }
     
-    public void removePlaylist(Integer playlistId) {
-    	playlists.remove(playlistId);
+    public void removePlaylist(String playlistName) {
+    	playlists.remove(playlistName);
     }
 
-    public Map<Integer,Playlist> getPlaylists() {
+    public Map<String,Playlist> getPlaylists() {
         return playlists;
     }
+    
+    public void setPlaylists(Map<String,Playlist> list) {
+        this.playlists = list;
+    }
 
-    private Playlist findPlaylist(Integer playlistId) {
-    	return playlists.get(playlistId);
+    private Playlist findPlaylist(String playlistName) {
+    	return playlists.get(playlistName);
     }
 }

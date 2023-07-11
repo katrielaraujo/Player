@@ -28,8 +28,11 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import br.imd.player.DAO.MediaManager;
+import br.imd.player.model.Playlist;
 import br.imd.player.model.Song;
 import br.imd.player.model.User;
+import br.imd.player.model.UserVip;
+import br.imd.player.util.PlaylistOperationException;
 import br.imd.player.util.SongNotFoundException;
 
 public class MusicPlayerController {
@@ -152,11 +155,28 @@ public class MusicPlayerController {
     }
 
     public void criarPlaylist(ActionEvent event) {
-        // Lógica para criar uma playlist
+        String namePlaylist = "";
+        UserVip userVip = (UserVip) user;
+        userVip.createPlaylist(namePlaylist);
+        if(userVip.getPlaylists().containsKey(namePlaylist)){
+        	dao = new MediaManager();
+        	dao.insertPlaylist(userVip.getPlaylists().get(namePlaylist));
+        	System.out.println(userVip.getPlaylists().get(namePlaylist));
+        }else {
+        	System.out.println("PlayList já existe");
+        }
     }
 
     public void selectPlaylist(MouseEvent mouseEvent) {
         // Lógica para selecionar uma playlist
+    }
+    
+    private void updateUserVip(UserVip user) {
+    	dao = new MediaManager();
+    	user.setPlaylists(dao.getPlaylistsByUserId(user.getId()));
+    	for (Playlist play : user.getPlaylists().values()) {
+    		play.setSongs(dao.getSongsByPlaylist(play.getId()));
+    	}
     }
 
     public void playMedia() {
@@ -246,7 +266,6 @@ public class MusicPlayerController {
             
             songs.add(song);
         }
-        
         return songs;
     }
 
