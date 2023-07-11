@@ -41,6 +41,8 @@ public class MusicPlayerController {
     private ProgressBar songProgressBar;
     @FXML
     private ListView<Playlist> playlistListView;
+    @FXML
+    private Label userNameLabel;
 
     private int songNumber;
     private Timer timer;
@@ -65,6 +67,7 @@ public class MusicPlayerController {
         songProgressBar.setStyle("-fx-accent: #00FF00;");
         fileChooser = new FileChooser();
         fileChooser.setTitle("Adicionar Arquivo de Música");
+
     }
 
     private void initializeVolumeSlider() {
@@ -108,6 +111,7 @@ public class MusicPlayerController {
 
     public void setUser(User user) {
         this.user = user;
+        userNameLabel.setText(user.getEmail());
         chooseFileMethod();
         loadPlaylists();
     }
